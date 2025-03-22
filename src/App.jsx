@@ -26,6 +26,12 @@ const schema = {
   required: ["businessName", "gstin", "loanAmount"],
 };
 
+const businessSchema = {
+  type: "Object",
+  title: "Business Details",
+  properties: {},
+};
+
 // UI Customization (optional)
 const uiSchema = {
   loanAmount: {
