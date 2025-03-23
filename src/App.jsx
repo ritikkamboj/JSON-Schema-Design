@@ -1,7 +1,7 @@
 import React from "react";
 import Form from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
-
+// https://www.jsonschemavalidator.net/
 // JSON
 const schema = {
   title: "Loan Application jai shree ram ",
@@ -27,10 +27,58 @@ const schema = {
 };
 
 const businessSchema = {
-  type: "Object",
-  title: "Business Details",
-  properties: {},
-};
+  "type": "object",
+  "title": "Business Details",
+  "properties": {
+    "BusinessName": {
+       "type": "string",
+        "title": "Business Name"
+    },
+    "gstin":{
+      "type":"string",
+      "title":"GSTIN (15 characters)",
+      "pattern": "^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[0-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$",
+      "description": "GSTIN should be a valid 15-characters"
+
+    },
+    "directors":{
+      "type":"array",
+      "title":"Directors",
+      "items":{
+        "type":"object",
+        "properties":{
+          "name": {
+            "type":"string",
+            "title": "Director's Name"
+          },
+          "panNumber": {
+            "type": "string",
+            "title": "PAN Number",
+            "pattern": "^[A-Z]{5}[0-9]{4}[A-Z]{1}$",
+            "description": "Enter here PAN Number"
+          },
+          "tags":{
+            "type": "array",
+            "title": "Tags",
+            "items" :{
+              "type": "string",
+              "enum": [
+                "Director", "Authorized Signatory"
+              ]
+            },
+            "uniqueItems": true,
+            "description": "Choose one or more roles for this director."
+          }
+         
+        },
+        "required": ["name","panNumber","tags"]
+      }
+
+    }
+   
+  },
+  "required": ["directors","gstin","BusinessName"]
+}
 
 // UI Customization (optional)
 const uiSchema = {
