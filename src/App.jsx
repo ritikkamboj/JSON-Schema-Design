@@ -80,6 +80,58 @@ const businessSchema = {
   "required": ["directors","gstin","BusinessName"]
 }
 
+//Loan Schema 
+const loanSchema ={
+  "title": "Loan Details",
+  "type":"object",
+  "properties":{
+    "creditScore":{
+      "type":"integer",
+      "title":"Credit Score",
+     },
+     "loanAmount":{
+      "type" : "number",
+      "title": "Loan Amount",
+      "minimum":50000,
+      "maximum":500000
+  },
+  "gurantors":{
+    "type": "array",
+    "title": "Gurantors",
+    "items":{
+      "type": "object",
+      "properties":{
+        "name": {
+          "type": "string",
+          "title": "Gurantor's Name"
+        },
+        "panNumber":{
+          "type": "string",
+          "title": "PAN Number"
+        },
+        "relationship":{
+          "type": "string",
+          "title": "Relationship With Applicants",
+          "enum": [
+            "Father", "Mother", "Brother", "Sister","Spouse","other"
+          ]
+        },
+        "relation":{
+          "type": "string",
+          "title": "Specify Relation (If Other)",
+          "description": ""
+        }
+
+
+      },
+      "required": ["name", "panNumber", "relationship"]
+    }
+
+  }
+
+}
+
+
 // UI Customization (optional)
 const uiSchema = {
   loanAmount: {
