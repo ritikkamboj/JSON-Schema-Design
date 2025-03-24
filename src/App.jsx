@@ -196,17 +196,41 @@ const loanUiSchema = {
 };
 
 // Form Submission Handler
-const onSubmit = ({ formData }) => {
-  console.log("Form submitted with data:", formData);
-  alert("Form Submitted! Check the console for data.");
-};
+// const onSubmit = ({ formData }) => {
+//   console.log("Form submitted with data:", formData);
+//   alert("Form Submitted! Check the console for data.");
+// };
 
 const App = ({formData}) => {
-  console.log('formData', formData)
+  console.log('formData', formData )
 
   const [formType , setFormType] = useState('businessSchema');
+  const [businessType , setBusinessType] = useState({});
+  const [loanType , setLoanType] = useState({});
 
-  const schema = formType === 'businessSchema' ? businessSchema : loanSchema;
+  // const schema = formType === 'businessSchema' ? businessSchema : loanSchema;
+
+  
+  const handleSubmit = ({ formData }) => {
+    if (formType === "businessSchema") {
+      setBusinessType(formData);
+      console.log("Business Form Data:", formData);
+      alert("Business Form Submitted!");
+    } else {
+      setLoanType(formData);
+      console.log("Loan Form Data:", formData);
+      alert("Loan Form Submitted!");
+    }
+  };
+  
+  const handleFinalSubmit = () => {
+    const combinedData = {
+      businessDetails: businessType,
+      loanDetails: loanType,
+    };
+    console.log("Final Combined Data:", combinedData);
+    alert("Final Submission Complete! Check console for data.");
+  };
 
   return (
     <div style={{ padding: "20px" }}>
@@ -214,17 +238,21 @@ const App = ({formData}) => {
      {formType === "businessSchema" ?  <Form
         schema={businessSchema}
         uiSchema={businessUiSchema}
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit}
         validator={validator}
       /> :  <Form
       schema={loanSchema}
       uiSchema={loanUiSchema}
-      onSubmit={onSubmit}
+      onSubmit={handleSubmit}
       validator={validator}
     />}
       <div>
         <button onClick={()=> setFormType('businessSchema')}>Business Form</button>
         <button onClick={()=> setFormType('loanSchema')}>Loan Form</button>
+        {Object.keys(businessType).length > 0 &&
+        Object.keys(loanType).length > 0 && (
+          <button onClick={handleFinalSubmit}>Submit All Data</button>
+        )}
       </div>
      
     </div>
