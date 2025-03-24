@@ -83,58 +83,102 @@ const businessSchema = {
 //Loan Schema 
 const loanSchema ={
   "title": "Loan Details",
-  "type":"object",
-  "properties":{
-    "creditScore":{
-      "type":"integer",
-      "title":"Credit Score",
-     },
-     "loanAmount":{
-      "type" : "number",
-      "title": "Loan Amount",
-      "minimum":50000,
-      "maximum":500000
-  },
-  "gurantors":{
-    "type": "array",
-    "title": "Gurantors",
-    "items":{
-      "type": "object",
-      "properties":{
-        "name": {
-          "type": "string",
-          "title": "Gurantor's Name"
+  "type": "object",
+  "properties": {
+    "creditScore": {
+      "type": "number",
+      "title": "Credit Score"
+    },
+    "loanAmount": {
+      "type": "number",
+      "title": "Required Loan Amount",
+      "minimum": 50000,
+      "maximum": 500000
+    },
+    "guarantors": {
+      "type": "array",
+      "title": "Guarantors (Required if Credit Score < 700)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Guarantor Name"
+          },
+          "panNumber": {
+            "type": "string",
+            "title": "PAN Number",
+            "pattern": "^[A-Z]{5}[0-9]{4}[A-Z]{1}$"
+          },
+          "relationship": {
+            "type": "string",
+            "title": "Relationship with Applicant",
+            "enum": ["Father", "Mother", "Brother", "Sister", "Spouse", "Other"]
+          },
+          "relation": {
+            "type": "string",
+            "title": "Specify Relationship (If Other)"
+          }
         },
-        "panNumber":{
-          "type": "string",
-          "title": "PAN Number"
-        },
-        "relationship":{
-          "type": "string",
-          "title": "Relationship With Applicants",
-          "enum": [
-            "Father", "Mother", "Brother", "Sister","Spouse","other"
-          ]
-        },
-        "relation":{
-          "type": "string",
-          "title": "Specify Relation (If Other)",
-          "description": ""
-        }
-
-
-      },
-      "required": ["name", "panNumber", "relationship"]
+        "required": ["name", "panNumber", "relationship"]
+      }
+    },
+    "bankStatements": {
+      "type": "array",
+      "title": "Upload Bank Statements",
+      "items": {
+        "type": "string",
+        "format": "data-url"
+      }
     }
-
+  },
+  "required": ["creditScore", "loanAmount"],
+  "dependencies": {
+    "creditScore": {
+      "oneOf": [
+        {
+          "properties": {
+            "creditScore": { "minimum": 700 }
+          }
+        },
+        {
+          "properties": {
+            "creditScore": { "maximum": 699 },
+            "guarantors": {
+              "type": "array",
+              "minItems": 2
+            },
+            "bankStatements": {
+              "type": "array"
+            }
+          },
+          "required": ["guarantors", "bankStatements"]
+        }
+      ]
+    },
+    "relationship": {
+      "oneOf": [
+        {
+          "properties": {
+            "relationship": { "enum": ["Other"] },
+            "relation": { "type": "string" }
+          },
+          "required": ["relation"]
+        },
+        {
+          "properties": {
+            "relationship": { "enum": ["Father", "Mother", "Brother", "Sister", "Spouse"] }
+          }
+        }
+      ]
+    }
   }
-
 }
 
 
 // UI Customization (optional)
 const uiSchema = {
-  loanAmount: {
+  "loanAmount": {
     "ui:widget": "range",
   },
 };
